@@ -1,5 +1,5 @@
 import { Text, View, Pressable } from "react-native";
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { Link, Stack } from "expo-router";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { ClerkProvider, ClerkLoaded, ClerkLoading } from "@clerk/clerk-expo";

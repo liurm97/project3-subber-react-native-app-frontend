@@ -3,9 +3,18 @@ import { Slot, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 
-const CLERK_PUBLISHABLE_KEY =
-  "pk_test_cHJpbWUtbmFyd2hhbC04OC5jbGVyay5hY2NvdW50cy5kZXYk";
+let publishableKey = undefined;
 
+try {
+  publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+  if (!publishableKey) {
+    throw new Error(
+      "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+    );
+  }
+} catch (err: any) {
+  console.log(err);
+}
 const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
@@ -47,10 +56,7 @@ const tokenCache = {
 
 const RootLayout = () => {
   return (
-    <ClerkProvider
-      publishableKey={CLERK_PUBLISHABLE_KEY}
-      tokenCache={tokenCache}
-    >
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
       <InitialLayout />
     </ClerkProvider>
   );

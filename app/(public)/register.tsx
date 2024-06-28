@@ -87,12 +87,35 @@ const Register = () => {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code,
       });
-
       console.log("completeSignUp", completeSignUp);
-      if (completeSignUp.status === "complete") {
+      const clerkUserId = completeSignUp?.id!;
+      console.log("clerkUserId", clerkUserId);
+
+      const createUserDbResult = await fetch(
+        "http://192.168.0.112:3000/users/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: emailAddress,
+            clerkUserId: clerkUserId,
+          }),
+        }
+      );
+
+      console.log("createUserDbResult status code", createUserDbResult.status);
+      if (
+        createUserDbResult.status == 201 &&
+        completeSignUp.status === "complete"
+      ) {
         await setActive({ session: completeSignUp.createdSessionId });
+      } else {
+        console.log("running in process");
       }
     } catch (err: any) {
+      console.log(err.errors);
       alert(err.errors[0].message);
     } finally {
       setLoading(false);
