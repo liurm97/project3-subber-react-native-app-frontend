@@ -28,7 +28,7 @@ const InitialLayout = () => {
     console.log("User changed: ", isSignedIn);
 
     if (isSignedIn && !inTabsGroup) {
-      router.replace("/analytics");
+      router.replace("/addSubscriptions");
     } else if (!isSignedIn) {
       router.replace("/main");
     }
@@ -56,7 +56,7 @@ const tokenCache = {
 
 const RootLayout = () => {
   return (
-    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+    <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
       <InitialLayout />
     </ClerkProvider>
   );

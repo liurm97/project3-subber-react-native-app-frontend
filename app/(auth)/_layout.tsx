@@ -47,9 +47,8 @@ const TabsPage = () => {
       <Tabs.Screen
         name="addSubscriptions"
         options={{
-          title: "Add Subscriptions",
+          title: "Add Subscription",
           tabBarIcon: ({ focused, color }) => {
-            // const iconName = focused ? "plus-square" : "plus-square-o";
             return <FontAwesome size={40} name={"plus-square"} color={"red"} />;
           },
           // tabBarActiveTintColor: "red",

@@ -64,10 +64,6 @@ export const getEarliestDate = async (date: string): Promise<any> => {
     const paymentStartDates = result.subscriptions?.map((subscription: any) =>
       dayjs.utc(subscription.payment_start_date)
     );
-    // console.log(
-    //   "paymentEarliestDate",
-    //   dayjs(paymentEarliestDate).format("YYYY-MM-DD")
-    // );
     console.log("paymentStartDates", paymentStartDates);
     const earliestDate = dayjs(Math.min(...paymentStartDates)).format(
       "YYYY-MM-DD"
@@ -138,11 +134,38 @@ export const makeBarChartInitialValues = async (date: string) => {
     });
   });
   console.log("initialValues", initialValues);
-  // initialValues.sort((a, b) => b.value - a.value);
+  initialValues.sort((a, b) => b.value - a.value);
   return initialValues;
-  // {
-  //   frontColor: "#FFC1C1",
-  //   value: 120,
-  //   labelTextStyle: { color: "black" },
-  // },
+};
+
+export const listAllAvailableSubscriptions = async (view: string) => {
+  const signedInUserId = await getData("signInUserId");
+
+  const response = await fetch(
+    `http://192.168.0.112:3000/subscriptions/available/users/${signedInUserId}?view=${view}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const result = await response.json();
+  console.log("listAllAvailableSubscriptions Result", result);
+  return result?.result.categories;
+};
+
+export const getSubscriptionNameAndUrl = async (subscriptionId: string) => {
+  const response = await fetch(
+    `http://192.168.0.112:3000/subscriptions/available/${subscriptionId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const result = await response.json();
+  return result?.result;
 };
