@@ -25,7 +25,7 @@ const TabsPage = () => {
     <Tabs
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#C8E9E7",
+          backgroundColor: "#6c47ff",
         },
         headerTintColor: "#fff",
       }}

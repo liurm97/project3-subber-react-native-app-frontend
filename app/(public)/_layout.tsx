@@ -21,7 +21,7 @@ const PublicLayout = () => {
       <Stack.Screen
         name="main"
         options={{
-          headerTitle: "",
+          headerTitle: "Main",
           // headerShown: false,
         }}
       ></Stack.Screen>

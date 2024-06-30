@@ -22,7 +22,7 @@ import {
 } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 import { StyleSheet, View } from "react-native";
-
+import { storeData } from "../../utils/helper";
 const Register = () => {
   const router = useRouter();
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -64,7 +64,7 @@ const Register = () => {
       });
 
       console.log("createUserResult", createUserResult);
-      // Send verification Email
+      // Send verification email code
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
       // change the UI to verify the email address
@@ -84,13 +84,14 @@ const Register = () => {
     setLoading(true);
 
     try {
+      // User inputs verification email code
+
+      // if successful:
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code,
       });
-      console.log("completeSignUp", completeSignUp);
       const clerkUserId = completeSignUp?.id!;
-      console.log("clerkUserId", clerkUserId);
-
+      // insert user record into the users table in DB
       const createUserDbResult = await fetch(
         "http://192.168.0.112:3000/users/register",
         {
@@ -104,15 +105,17 @@ const Register = () => {
           }),
         }
       );
+      const createUserDbData = await createUserDbResult.json();
+      const dbUserId = createUserDbData.result.id;
+      console.log("dbUserId", dbUserId);
 
-      console.log("createUserDbResult status code", createUserDbResult.status);
       if (
         createUserDbResult.status == 201 &&
         completeSignUp.status === "complete"
       ) {
+        // Create session for the signed in user (User is now signed in)
+        await storeData("signInUserId", dbUserId);
         await setActive({ session: completeSignUp.createdSessionId });
-      } else {
-        console.log("running in process");
       }
     } catch (err: any) {
       console.log(err.errors);
@@ -138,14 +141,6 @@ const Register = () => {
 
         {!pendingVerification && (
           <>
-            {/* <Center
-            w={"100%"}
-            height={"$full"}
-            flex={1}
-            backgroundColor="blue"
-            gap={10}
-            p={6}
-          > */}
             <FormControl
               p="$6"
               borderWidth="$1"
@@ -204,7 +199,6 @@ const Register = () => {
                   m="auto"
                   w={"50%"}
                   onPress={() => {
-                    console.warn("signing up");
                     onSignUpPress();
                   }}
                 >
@@ -245,7 +239,6 @@ const Register = () => {
                 m="auto"
                 w={"35%"}
                 onPress={() => {
-                  console.warn("signing up");
                   onPressVerify();
                 }}
               >
