@@ -169,3 +169,34 @@ export const getSubscriptionNameAndUrl = async (subscriptionId: string) => {
   const result = await response.json();
   return result?.result;
 };
+
+export const subscribeToExistingSubscription = async (data: any) => {
+  const signedInUserId = await getData("signInUserId");
+  const response = await fetch(
+    `http://192.168.0.112:3000/subscriptions/subscribed/existing/users/${signedInUserId}`,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+export const listUserSubscribedSubscriptions = async () => {
+  const signedInUserId = await getData("signInUserId");
+
+  const response = await fetch(
+    `http://192.168.0.112:3000/subscriptions/subscribed/users/${signedInUserId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const result = await response.json();
+  console.log("listUserSubscribedSubscriptions Result", result);
+  return result?.subscriptions;
+};
